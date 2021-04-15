@@ -18,7 +18,7 @@ import java.util.List;
 public class Application implements CommandLineRunner {
     private static final Logger log = LoggerFactory.getLogger(Application.class);
     private static final Faker FAKER = new Faker();
-    public static final int BATCH_SIZE = 1_000;
+    public static final int BATCH_SIZE = 100_000;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -43,7 +43,7 @@ public class Application implements CommandLineRunner {
     private void createTable() {
         jdbcTemplate.execute("" +
                 "CREATE TABLE `user` (" +
-                "  `id` int(11) unsigned NOT NULL AUTO_INCREMENT," +
+                "  `id` int(11) unsigned NOT NULL," +
                 "  `name` varchar(64) NOT NULL DEFAULT ''," +
                 "  `email` varchar(64) NOT NULL DEFAULT ''," +
                 "  `birth_date` DATE, " +
@@ -52,19 +52,20 @@ public class Application implements CommandLineRunner {
     }
 
     private void insertData() {
-        String insertQuery = "INSERT INTO `user` (name, email, birth_date) VALUES (?, ?, ?);";
+        String insertQuery = "INSERT INTO `user` (id, name, email, birth_date) VALUES (?, ?, ?, ?)";
         log.info("Data generation started");
-        for (int i = 0; i < 40_000; i++) {
-            jdbcTemplate.batchUpdate(insertQuery, getTenKUsers());
+        for (int i = 0; i < 400; i++) {
+            jdbcTemplate.batchUpdate(insertQuery, getTenKUsers(i));
             log.info("{} users created", (i + 1) * BATCH_SIZE);
         }
         log.info("Fake users created");
     }
 
-    private List<Object[]> getTenKUsers() {
+    private List<Object[]> getTenKUsers(int page) {
         List<Object[]> result = new LinkedList<>();
         for (int i = 0; i < BATCH_SIZE; i++) {
-            result.add(new Object[]{FAKER.name().name(), FAKER.internet().emailAddress(), FAKER.date().birthday()});
+            result.add(new Object[]{page * BATCH_SIZE + i, FAKER.name().name(), FAKER.internet().emailAddress(),
+                    FAKER.date().birthday()});
         }
         return result;
     }
