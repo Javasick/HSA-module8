@@ -1,0 +1,4 @@
+2021-04-15 12:30:32.163  INFO 10804 --- [           main] com.projector.Application                : Records count: 40000000
+2021-04-15 12:30:52.343  INFO 10804 --- [           main] com.projector.Application                : Query time = 20179
+2021-04-15 12:32:27.786  INFO 10804 --- [           main] com.projector.Application                : Index by birth date created
+2021-04-15 12:32:27.791  INFO 10804 --- [           main] com.projector.Application                : Query time = 4
